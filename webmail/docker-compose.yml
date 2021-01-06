@@ -1,0 +1,23 @@
+version: '3'
+services:
+  mailsv:
+    image: agwlvssainokuni/devmailsv
+    container_name: mailsv
+    ports:
+      - '22:22'
+      - '465:465'
+      - '587:587'
+  webmail:
+    image: roundcube/roundcubemail
+    container_name: websv
+    depends_on:
+      - mailsv
+    ports:
+      - '80:80'
+    environment:
+      ROUNDCUBEMAIL_DEFAULT_HOST: 'ssl://mailsv'
+      ROUNDCUBEMAIL_DEFAULT_PORT: 993
+      ROUNDCUBEMAIL_SMTP_SERVER: 'ssl://mailsv'
+      ROUNDCUBEMAIL_SMTP_PORT: 465
+    volumes:
+      - ./roundcube/:/var/roundcube/config/
